@@ -37,3 +37,51 @@ export const calculateLanguageStats = (repos) => {
 
   return { topLanguage, languagesBreakdown };
 };
+
+// Calculate day of week activity statistics
+export const calculateDayOfWeekStats = (contributions, events) => {
+  const dayCounts = {
+    Sunday: 0,
+    Monday: 0,
+    Tuesday: 0,
+    Wednesday: 0,
+    Thursday: 0,
+    Friday: 0,
+    Saturday: 0,
+  };
+
+  if (contributions?.contributionCalendar?.weeks) {
+    contributions.contributionCalendar.weeks.forEach((week) => {
+      week.contributionDays.forEach((day) => {
+        const date = new Date(day.date);
+        const dayName = DAYS[date.getDay()];
+        dayCounts[dayName] += day.contributionCount;
+      });
+    });
+  } else {
+    // Fallback to events data if contributions data is missing
+    events.forEach((event) => {
+      const date = new Date(event.created_at);
+      const dayName = DAYS[date.getDay()];
+      dayCounts[dayName] += 1;
+    });
+  }
+
+  const mostActiveDay = Object.entries(dayCounts).sort(
+    (a, b) => b[1] - a[1]
+  )[0][0];
+
+  const weekDayActivity = weekDays.reduce(
+    (sum, day) => sum + dayCounts[day],
+    0
+  );
+  const weekendDayActivity = weekendDays.reduce(
+    (sum, day) => sum + dayCounts[day],
+    0
+  );
+  return {
+    mostActiveDay,
+    weekDayActivity,
+    weekendDayActivity,
+  };
+};
