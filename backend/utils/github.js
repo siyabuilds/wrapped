@@ -55,3 +55,44 @@ export const searchCommits = async (username, year, page = 1) => {
 
   return response.json();
 };
+
+// Get user contributions for a given year using GraphQL
+export const getUserContributions = async (username, year) => {
+  const query = `
+    query($username: String!) {
+      user(login: $username) {
+        contributionsCollection(from: "${year}-01-01T00:00:00Z", to: "${year}-12-31T23:59:59Z") {
+          totalCommitContributions
+          totalPullRequestContributions
+          totalIssueContributions
+          totalRepositoryContributions
+          contributionCalendar {
+            totalContributions
+            weeks {
+              contributionDays {
+                contributionCount
+                date
+                weekday
+              }
+            }
+          }
+        }
+      }
+    }
+  `;
+
+  const response = await fetch(GITHUB_GRAPHQL_ENDPOINT, {
+    method: "POST",
+    headers: getGitHubHeaders(),
+    body: JSON.stringify({ query, variables: { username } }),
+  });
+
+  if (!response.ok) {
+    throw new Error(
+      `GitHub GraphQL API error: ${response.status} ${response.statusText}`
+    );
+  }
+
+  const data = await response.json();
+  return data.data?.user?.contributionsCollection || null;
+};
