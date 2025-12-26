@@ -31,3 +31,27 @@ export const fetchFromGitHub = async (endpoint) => {
 
   return response.json();
 };
+
+// Search commits for user for a given year
+export const searchCommits = async (username, year, page = 1) => {
+  const query = `author:${username} author-date:${year}-01-01..${year}-12-31`;
+  const response = await fetch(
+    `${GITHUB_API_BASE}/search/commits?q=${encodeURIComponent(
+      query
+    )}&per_page=100&page=${page}`,
+    {
+      headers: {
+        ...getGitHubHeaders(),
+        Accept: "application/vnd.github.cloak-preview",
+      },
+    }
+  );
+
+  if (!response.ok) {
+    throw new Error(
+      `GitHub Search API error: ${response.status} ${response.statusText}`
+    );
+  }
+
+  return response.json();
+};
