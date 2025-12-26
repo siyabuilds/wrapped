@@ -4,7 +4,7 @@ import { config } from "../config";
 export const GITHUB_API_BASE = "https://api.github.com";
 
 // GitHub GraphQL Endpoint
-export const GITHUB_GRAPHQL_ENDPOINT = "https://api.github.com/graphql";
+export const GITHUB_GRAPHQL_ENDPOINT = `${GITHUB_API_BASE}/graphql`;
 
 // Function to get headers for GitHub API requests
 export const getGitHubHeaders = () => {
