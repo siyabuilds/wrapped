@@ -1,6 +1,10 @@
 import express from "express";
 import cors from "cors";
 import { config } from "./config/index.js";
+import { connectDB } from "./db/connect.js";
+
+// Connect to the database
+connectDB();
 
 const app = express();
 

@@ -1,3 +1,5 @@
+import { mongo } from "mongoose";
+
 export const config = {
   port: process.env.PORT || 3001,
   githubToken: process.env.GITHUB_TOKEN,
@@ -9,4 +11,5 @@ export const config = {
 
     return now < december1st ? currentYear - 1 : currentYear;
   },
+  mongoUri: process.env.MONGO_URI || "mongodb://localhost:27017/wrapped",
 };
