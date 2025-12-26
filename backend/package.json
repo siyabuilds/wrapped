@@ -1,0 +1,32 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "check-env": "node src/checkEnv.js"
+  },
+  "keywords": [
+    "github",
+    "wrapped",
+    "express",
+    "react"
+  ],
+  "author": {
+    "name": "Siyabonga Samson Lukhele",
+    "email": "siyabonga.lukhele@umuzi.org",
+    "url": "https://samsonlukhele.me/"
+  },
+  "license": "MIT",
+  "type": "module",
+  "dependencies": {
+    "express": "^5.2.1",
+    "mongoose": "^9.0.2",
+    "openai": "^6.15.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.11"
+  }
+}
