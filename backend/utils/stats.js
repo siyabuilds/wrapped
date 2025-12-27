@@ -115,3 +115,18 @@ export const findGhostedRepo = (repos) => {
       }
     : null;
 };
+
+// Get top repos by stars
+export const getTopStarredRepo = (repos) => {
+  const sortedByStars = repos.sort(
+    (a, b) => b.stargazers_count - a.stargazers_count
+  );
+  const topRepo = sortedByStars[0];
+  return topRepo
+    ? {
+        name: topRepo.name,
+        url: topRepo.html_url,
+        stars: topRepo.stargazers_count,
+      }
+    : null;
+};
