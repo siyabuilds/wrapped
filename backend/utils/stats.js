@@ -130,3 +130,41 @@ export const getTopStarredRepo = (repos) => {
       }
     : null;
 };
+
+// Calculate total commits from contributions data
+export const calculateTotalCommits = (contributions, commitSearch, events) => {
+  // Use GraphQL contributions data if available
+  if (contributions?.totalCommitContributions) {
+    return contributions.totalCommitContributions;
+  }
+  // First fallback: use search
+  if (commitSearch?.total_count) {
+    return commitSearch.total_count;
+  }
+  // Final fallback: count events of type 'PushEvent'(less accurate)
+  return events
+    .filter((e) => e.type === "PushEvent")
+    .reduce((sum, e) => sum + (e.payload?.commits?.length || 0), 0);
+};
+
+// Calculate actuive days(streak)
+export const calculateActiveDays = (contributions, events) => {
+  if (contributions?.contributionCalendar?.weeks) {
+    let activeDays = 0;
+    contributions.contributionCalendar.weeks.forEach((week) => {
+      week.contributionDays.forEach((day) => {
+        if (day.contributionCount > 0) {
+          activeDays += 1;
+        }
+      });
+    });
+    return activeDays;
+  }
+  // Fallback to events data if contributions data is missing
+  const commitDates = new Set(
+    events
+      .filter((e) => e.type === "PushEvent")
+      .map((e) => new Date(e.created_at).toDateString())
+  );
+  return commitDates.size;
+};
