@@ -1,6 +1,5 @@
 import OpenAI from "openai";
 import { config } from "../config/index.js";
-import { get } from "mongoose";
 
 // Check if OpenAI token is configured
 const isOpenAIConfigured = () => {

@@ -1,4 +1,4 @@
-import { config } from "../config";
+import { config } from "../config/index.js";
 
 // GitHub API Base URL
 export const GITHUB_API_BASE = "https://api.github.com";
