@@ -2,10 +2,12 @@ import express from "express";
 import cors from "cors";
 import { config } from "./config/index.js";
 import { connectDB } from "./db/connect.js";
+import wrappedRouter from "./routes/wrpped.js";
 
 // Connect to the database
 connectDB();
 
+// Initialize Express app
 const app = express();
 
 // Middleware
@@ -17,6 +19,10 @@ app.get("/health", (req, res) => {
   res.json({ status: "ok", year: config.year });
 });
 
+// Routes
+app.use("/api/wrapped", wrappedRouter);
+
+// Root endpoint
 app.get("/", (req, res) => {
   res.send("Welcome to the GitHub Wrapped API!");
 });
