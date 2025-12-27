@@ -168,3 +168,49 @@ export const calculateActiveDays = (contributions, events) => {
   );
   return commitDates.size;
 };
+
+// Calculate comprehensive GH stats
+export const calculateStats = (
+  user,
+  repos,
+  events,
+  commitSearch,
+  contributions
+) => {
+  const { topLanguage, languagesBreakdown } = calculateLanguageStats(repos);
+  const { mostActiveDay, weekDayActivity, weekendDayActivity } =
+    calculateDayOfWeekStats(contributions, events);
+  const ghostedRepo = findGhostedRepo(repos);
+  const topStarredRepo = getTopStarredRepo(repos);
+  const totalCommits = calculateTotalCommits(
+    contributions,
+    commitSearch,
+    events
+  );
+  const activeDays = calculateActiveDays(contributions, events);
+  const totalContributions =
+    contributions?.contributionCalendar?.totalContributions || events.length;
+
+  return {
+    username: user.login,
+    avatarUrl: user.avatar_url,
+    name: user.name,
+    bio: user.bio,
+    topLanguage,
+    languagesBreakdown,
+    mostActiveDay,
+    weekDayActivity,
+    weekendDayActivity,
+    ghostedRepo,
+    topStarredRepo,
+    totalCommits,
+    activeDays,
+    totalRepos: repos.length,
+    public_repos: user.public_repos,
+    totalContributions,
+    followers: user.followers,
+    following: user.following,
+    totalEvents: events.length,
+    year: config.year(),
+  };
+};
