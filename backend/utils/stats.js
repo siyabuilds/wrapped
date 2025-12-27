@@ -147,7 +147,7 @@ export const calculateTotalCommits = (contributions, commitSearch, events) => {
     .reduce((sum, e) => sum + (e.payload?.commits?.length || 0), 0);
 };
 
-// Calculate actuive days(streak)
+// Calculate active days(streak)
 export const calculateActiveDays = (contributions, events) => {
   if (contributions?.contributionCalendar?.weeks) {
     let activeDays = 0;
