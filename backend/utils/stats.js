@@ -85,3 +85,33 @@ export const calculateDayOfWeekStats = (contributions, events) => {
     weekendDayActivity,
   };
 };
+
+// Find ghosted repo (longest time since last update)
+export const findGhostedRepo = (repos) => {
+  const now = new Date();
+  let ghostedRepo = null;
+  let maxGhostDays = 0;
+
+  repos.forEach((repo) => {
+    const createdAt = new Date(repo.created_at);
+    // Only consider repos older than 30 days
+    if ((now - createdAt) / (1000 * 60 * 60 * 24) > 30) {
+      const lastUpdatedAt = new Date(repo.updated_at);
+      const ghostDays = Math.floor(
+        (now - lastUpdatedAt) / (1000 * 60 * 60 * 24)
+      );
+      if (ghostDays > maxGhostDays) {
+        maxGhostDays = ghostDays;
+        ghostedRepo = repo;
+      }
+    }
+  });
+
+  return ghostedRepo
+    ? {
+        name: ghostedRepo.name,
+        url: ghostedRepo.html_url,
+        ghostDays: maxGhostDays,
+      }
+    : null;
+};
