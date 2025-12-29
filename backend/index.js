@@ -1,11 +1,8 @@
 import express from "express";
 import cors from "cors";
 import { config } from "./config/index.js";
-import { connectDB } from "./db/connect.js";
+import { connectDB, disconnectDB, isDBConnected } from "./db/connect.js";
 import wrappedRouter from "./routes/wrpped.js";
-
-// Connect to the database
-connectDB();
 
 // Initialize Express app
 const app = express();
@@ -14,9 +11,13 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Health check
+// Health check with database status
 app.get("/health", (req, res) => {
-  res.json({ status: "ok", year: config.year });
+  res.json({
+    status: "ok",
+    year: config.year(),
+    database: isDBConnected() ? "connected" : "disconnected",
+  });
 });
 
 // Routes
@@ -27,12 +28,51 @@ app.get("/", (req, res) => {
   res.send("Welcome to the GitHub Wrapped API!");
 });
 
-// Start server
-app.listen(config.port, () => {
-  console.log(
-    `🚀 GitHub Wrapped API running on http://localhost:${config.port}`
-  );
-  console.log(`🔑 GitHub Token: ${config.githubToken ? "✓" : "✗"}`);
-  console.log(`🤖 OpenAI Token: ${config.openaiToken ? "✓" : "✗"}`);
-  console.log(`📅 Current Wrapped Year: ${config.year()}`);
-});
+// Async startup pattern - connect DB before starting server
+const startServer = async () => {
+  try {
+    await connectDB();
+
+    // Start server after successful DB connection
+    const server = app.listen(config.port, () => {
+      console.log(
+        `GitHub Wrapped API running on http://localhost:${config.port}`
+      );
+      console.log(`🔑 GitHub Token: ${config.githubToken ? "✓" : "✗"}`);
+      console.log(`🤖 OpenAI Token: ${config.openaiToken ? "✓" : "✗"}`);
+      console.log(`📅 Current Wrapped Year: ${config.year()}`);
+    });
+
+    // Graceful shutdown handlers
+    const gracefulShutdown = async (signal) => {
+      console.log(`\n${signal} received, shutting down gracefully...`);
+
+      // Stop accepting new requests
+      server.close(async () => {
+        console.log("HTTP server closed");
+
+        // Disconnect from database
+        await disconnectDB();
+
+        console.log("Graceful shutdown complete");
+        process.exit(0);
+      });
+
+      // Force shutdown after 10 seconds
+      setTimeout(() => {
+        console.error("Forced shutdown after timeout");
+        process.exit(1);
+      }, 10000);
+    };
+
+    // Listen for termination signals
+    process.on("SIGTERM", () => gracefulShutdown("SIGTERM"));
+    process.on("SIGINT", () => gracefulShutdown("SIGINT"));
+  } catch (error) {
+    console.error("Failed to start server:", error);
+    process.exit(1);
+  }
+};
+
+// Start the server
+startServer();

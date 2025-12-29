@@ -1,5 +1,3 @@
-import { mongo } from "mongoose";
-
 export const config = {
   port: process.env.PORT || 3001,
   githubToken: process.env.GITHUB_TOKEN,
