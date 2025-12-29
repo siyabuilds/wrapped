@@ -1,0 +1,24 @@
+services:
+  mongo:
+    image: mongo:6.0
+    container_name: wrapped-mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+
+  backend:
+    build: .
+    container_name: wrapped-backend
+    ports:
+      - "3001:3001"
+    environment:
+      - PORT=3001
+      - MONGO_URI=mongodb://mongo:27017/wrapped
+      - GITHUB_TOKEN=${GITHUB_TOKEN}
+      - CLIENT_URI=${CLIENT_URI}
+    depends_on:
+      - mongo
+
+volumes:
+  mongo-data:
