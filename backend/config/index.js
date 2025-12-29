@@ -1,3 +1,11 @@
+import dotenv from "dotenv";
+
+// Load environment variables from .env file
+dotenv.config();
+
+// Check mode
+const isDev = process.env.NODE_ENV === "development";
+
 export const config = {
   port: process.env.PORT || 3001,
   githubToken: process.env.GITHUB_TOKEN,
@@ -9,6 +17,7 @@ export const config = {
 
     return now < december1st ? currentYear - 1 : currentYear;
   },
-  mongoUri: process.env.MONGO_URI || "mongodb://localhost:27017/wrapped",
+  mongoUri: isDev ? "mongodb://localhost:27017/wrapped" : process.env.MONGO_URI,
   defaultModel: "gpt-4.1-mini",
+  clientUri: isDev ? "http://localhost:5173" : process.env.CLIENT_URI,
 };
