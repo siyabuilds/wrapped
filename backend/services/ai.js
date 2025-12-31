@@ -19,11 +19,11 @@ export const generateRoast = async (activitySummary) => {
   const openai = getOpenAIClient();
   if (!openai) {
     return `You spent most of your time writing ${
-      stats.topLanguage || "code"
+      activitySummary.topLanguage || "code"
     }. Your most loyal repo is "${
-      stats.topRepo || "unknown"
+      activitySummary.topStarredRepo?.name || "unknown"
     }" and you really ghosted "${
-      stats.ghostedRepo || "that one project"
+      activitySummary.ghostedRepo?.name || "that one project"
     }". Classic developer move! 🔥`;
   }
   try {
@@ -37,14 +37,16 @@ export const generateRoast = async (activitySummary) => {
         },
         {
           role: "user",
-          content: `Create a fun roast for this developer's GitHub ${config.year} stats:
+          content: `Create a fun roast for this developer's GitHub ${config.year()} stats:
             - Top language: ${activitySummary.topLanguage}
             - Total commits: ${activitySummary.totalCommits}
             - Most active day: ${activitySummary.mostActiveDay}
-            - Top repo: ${activitySummary.topRepo}
-            - Ghosted repo (longest without commits): ${activitySummary.ghostedRepo}
+            - Top repo: ${activitySummary.topStarredRepo?.name || "unknown"}
+            - Ghosted repo (longest without commits): ${
+              activitySummary.ghostedRepo?.name || "none"
+            }
             - Total repos: ${activitySummary.totalRepos}
-            - Streak days: ${activitySummary.streakDays}`,
+            - Streak days: ${activitySummary.activeDays}`,
         },
       ],
     });
@@ -60,14 +62,22 @@ export const generateRoast = async (activitySummary) => {
 export const generatePredictions = async (stats) => {
   const openai = getOpenAIClient();
   if (!openai) {
-    return `In ${
-      config.year() + 1
-    }, expect to double your commits and maybe even learn a new language! Keep an eye on your top repo, it might just become your main project. 🚀`;
+    return {
+      languagePrediction: `In ${
+        config.year() + 1
+      }, you might explore new languages beyond ${
+        stats.topLanguage || "your comfort zone"
+      }! 🚀`,
+      ossPrediction:
+        "Open source contributions could be in your future - keep an eye out for projects that excite you!",
+      burnoutRisk:
+        "Remember to take breaks and maintain a healthy coding pace! 💪",
+    };
   }
 
   try {
     const completion = await openai.chat.completions.create({
-      model: config.defaultModel,
+      model: "gpt-4o-mini",
       messages: [
         {
           role: "system",
@@ -81,7 +91,7 @@ Keep it light-hearted and positive. Use emojis sparingly but effectively.`,
         {
           role: "user",
           content: `Make fun predictions for this developer's ${
-            config.year + 1
+            config.year() + 1
           }:
             - Top language: ${stats.topLanguage}
             - Languages used: ${
@@ -90,9 +100,9 @@ Keep it light-hearted and positive. Use emojis sparingly but effectively.`,
             }
             - Total commits: ${stats.totalCommits}
             - Most active day: ${stats.mostActiveDay}
-            - Active days this year: ${stats.streakDays}
+            - Active days this year: ${stats.activeDays}
             - Total repos: ${stats.totalRepos}
-            - Top repo stars: ${stats.topRepoStars}`,
+            - Top repo stars: ${stats.topStarredRepo?.stars || 0}`,
         },
       ],
       response_format: { type: "json_object" },
@@ -114,18 +124,16 @@ Keep it light-hearted and positive. Use emojis sparingly but effectively.`,
 export const generateAdvice = async (habits) => {
   const openai = getOpenAIClient();
 
-  const isWeekendCoder = ["Saturday", "Sunday"].includes(stats.mostActiveDay);
+  const isWeekendCoder = ["Saturday", "Sunday"].includes(habits.mostActiveDay);
   const defaultAdvice = isWeekendCoder
     ? "You commit mostly on weekends → you might benefit from shorter weekday coding sessions to keep momentum going. Even 20 minutes counts! ⏰"
-    : `Your ${stats.mostActiveDay} productivity peak suggests you've found your flow state day. Protect that time! 🛡️`;
+    : `Your ${habits.mostActiveDay} productivity peak suggests you've found your flow state day. Protect that time! 🛡️`;
 
   if (!openai) {
     return defaultAdvice;
   }
 
   try {
-    const openai = getOpenAI();
-
     const completion = await openai.chat.completions.create({
       model: "gpt-4o-mini",
       messages: [
@@ -142,19 +150,20 @@ The advice should:
 Examples of good advice:
 - "You commit mostly on weekends → you might benefit from shorter weekday coding sessions to keep momentum going."
 - "Your Tuesday productivity spikes suggest that's your flow state day — try protecting that time from meetings."
-- "With ${habits.totalRepos} repos and only ${habits.streakDays} active days, consider focusing on fewer projects more deeply."`,
+- "With many repos and few active days, consider focusing on fewer projects more deeply."`,
         },
         {
           role: "user",
           content: `Give ONE personalized tip for this developer:
             - Most active day: ${habits.mostActiveDay}
-            - Activity breakdown: ${JSON.stringify(habits.activityByDay)}
+            - Weekday activity: ${habits.weekDayActivity}
+            - Weekend activity: ${habits.weekendDayActivity}
             - Total commits: ${habits.totalCommits}
-            - Active days: ${habits.streakDays}
+            - Active days: ${habits.activeDays}
             - Total repos: ${habits.totalRepos}
             - Top language: ${habits.topLanguage}
-            - Ghosted repo for ${habits.ghostedDays} days: ${
-            habits.ghostedRepo
+            - Ghosted repo for ${habits.ghostedRepo?.ghostDays || 0} days: ${
+            habits.ghostedRepo?.name || "none"
           }`,
         },
       ],
@@ -170,11 +179,13 @@ Examples of good advice:
 // Generate a one-sentence dev story summarizing the user's year
 export const generateDevStory = async (yearSummary) => {
   const openai = getOpenAIClient();
-  const defaultStory = `In ${config.year}, you explored ${
-    stats.topLanguage
-  }, doubled down on ${stats.topRepo || "your craft"}, and quietly abandoned ${
-    stats.ghostedRepo !== "None"
-      ? stats.ghostedRepo
+  const defaultStory = `In ${config.year()}, you explored ${
+    yearSummary.topLanguage
+  }, doubled down on ${
+    yearSummary.topStarredRepo?.name || "your craft"
+  }, and quietly abandoned ${
+    yearSummary.ghostedRepo?.name
+      ? yearSummary.ghostedRepo.name
       : "that side project you swore you'd finish"
   }.`;
 
@@ -191,7 +202,7 @@ export const generateDevStory = async (yearSummary) => {
         {
           role: "system",
           content: `You create a single, memorable sentence that summarizes a developer's year. 
-The format should be: "In ${config.year}, you [did X], [doubled down on Y], and [quietly abandoned Z]."
+The format should be: "In ${config.year()}, you [did X], [doubled down on Y], and [quietly abandoned Z]."
 Make it:
 - Exactly one sentence
 - Relatable and slightly self-deprecating
@@ -201,7 +212,7 @@ Make it:
         },
         {
           role: "user",
-          content: `Create a one-sentence dev story for ${config.year}:
+          content: `Create a one-sentence dev story for ${config.year()}:
             - Top language: ${yearSummary.topLanguage}
             - Other languages: ${
               yearSummary.languagesBreakdown
@@ -209,8 +220,8 @@ Make it:
                 .map((l) => l.name)
                 .join(", ") || "none"
             }
-            - Top repo: ${yearSummary.topRepo}
-            - Ghosted repo: ${yearSummary.ghostedRepo}
+            - Top repo: ${yearSummary.topStarredRepo?.name || "unknown"}
+            - Ghosted repo: ${yearSummary.ghostedRepo?.name || "none"}
             - Total commits: ${yearSummary.totalCommits}
             - Total repos: ${yearSummary.totalRepos}
             - Most active day: ${yearSummary.mostActiveDay}`,
