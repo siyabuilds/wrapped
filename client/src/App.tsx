@@ -1,68 +1,71 @@
 import { useState } from "react";
-import { Headphones } from "lucide-react";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
+  InputView,
+  LoadingView,
+  ErrorView,
+  WrappedView,
+} from "@/components/views";
+import type { WrappedStats } from "@/types/wrapped";
+
+const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:3001";
+
+type ViewState = "input" | "loading" | "wrapped" | "error";
 
 export function App() {
   const [username, setUsername] = useState("");
-  const [dialogOpen, setDialogOpen] = useState(false);
-  const [submittedUsername, setSubmittedUsername] = useState("");
+  const [viewState, setViewState] = useState<ViewState>("input");
+  const [stats, setStats] = useState<WrappedStats | null>(null);
+  const [error, setError] = useState<string>("");
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (username.trim()) {
-      setSubmittedUsername(username.trim());
-      setDialogOpen(true);
+  const fetchWrapped = async (username: string) => {
+    const response = await fetch(`${API_BASE_URL}/api/wrapped/${username}`);
+
+    if (!response.ok) {
+      if (response.status === 404) {
+        throw new Error(`User "${username}" not found on GitHub`);
+      }
+      throw new Error("Failed to fetch wrapped stats. Please try again.");
+    }
+
+    return response.json();
+  };
+
+  const handleSubmit = async (submittedUsername: string) => {
+    setUsername(submittedUsername);
+    setViewState("loading");
+    setError("");
+
+    try {
+      const data = await fetchWrapped(submittedUsername);
+      setStats(data);
+      setViewState("wrapped");
+    } catch (err) {
+      setError(
+        err instanceof Error ? err.message : "An unexpected error occurred"
+      );
+      setViewState("error");
     }
   };
 
-  return (
-    <div className="animated-bg min-h-screen flex flex-col items-center justify-center px-4">
-      <h1 className="text-5xl sm:text-6xl md:text-7xl font-bold mb-8 text-center">
-        <span className="text-white">GitHub </span>
-        <span className="gradient-text">Wrapped</span>
-      </h1>
+  const handleBack = () => {
+    setViewState("input");
+    setStats(null);
+    setError("");
+  };
 
-      <form onSubmit={handleSubmit} className="flex gap-3 w-full max-w-md">
-        <Input
-          type="text"
-          placeholder="Enter GitHub username"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-          className="flex-1 h-14 text-lg bg-white/10 border-white/30 text-white placeholder:text-white/60"
-        />
-        <Button type="submit" size="lg" className="gap-2 h-14 text-lg px-6">
-          <Headphones className="size-6" />
-          Get Wrapped
-        </Button>
-      </form>
+  if (viewState === "loading") {
+    return <LoadingView username={username} />;
+  }
 
-      <AlertDialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Success!</AlertDialogTitle>
-            <AlertDialogDescription>
-              {submittedUsername} received
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogAction onClick={() => setDialogOpen(false)}>
-              OK
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
-    </div>
-  );
+  if (viewState === "error") {
+    return <ErrorView error={error} onBack={handleBack} />;
+  }
+
+  if (viewState === "wrapped" && stats) {
+    return <WrappedView stats={stats} onBack={handleBack} />;
+  }
+
+  return <InputView onSubmit={handleSubmit} />;
 }
 
 export default App;
