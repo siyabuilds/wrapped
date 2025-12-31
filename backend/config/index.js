@@ -18,6 +18,6 @@ export const config = {
     return now < december1st ? currentYear - 1 : currentYear;
   },
   mongoUri: isDev ? "mongodb://localhost:27017/wrapped" : process.env.MONGO_URI,
-  defaultModel: "gpt-4.1-mini",
+  defaultModel: "gpt-4o-mini",
   clientUri: isDev ? "http://localhost:5173" : process.env.CLIENT_URI,
 };
