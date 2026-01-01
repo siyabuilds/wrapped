@@ -4,7 +4,7 @@ import dotenv from "dotenv";
 dotenv.config();
 
 // Check mode
-const isDev = process.env.NODE_ENV === "development";
+export const isDev = process.env.NODE_ENV === "development";
 
 export const config = {
   port: process.env.PORT || 3001,
