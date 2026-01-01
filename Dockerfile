@@ -1,5 +1,5 @@
 # Build React Frontend
-FROM node:20-alpine AS client-build
+FROM node:24 AS client-build
 
 WORKDIR /app/client
 
@@ -8,7 +8,7 @@ COPY client/package*.json ./
 RUN npm install
 
 # Copy source and public assets
-COPY client/tsconfig*.json vite.config.ts ./
+COPY client/tsconfig*.json client/vite.config.ts client/index.html client/components.json ./
 COPY client/public ./public
 COPY client/src ./src
 
@@ -17,7 +17,7 @@ RUN npm run build
 
 
 # Run Express Backend
-FROM node:20-alpine
+FROM node:24
 
 WORKDIR /app/backend
 
