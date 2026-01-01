@@ -36,3 +36,5 @@ EXPOSE 3001
 
 # Start the backend server
 CMD ["npm", "start"]
+
+ENV NODE_ENV=production
