@@ -7,7 +7,8 @@ import {
 } from "@/components/views";
 import type { WrappedStats } from "@/types/wrapped";
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:3001";
+// In production (same origin), use empty string; in dev, use the backend URL
+const API_BASE_URL = import.meta.env.VITE_API_URL ?? "";
 
 type ViewState = "input" | "loading" | "wrapped" | "error";
 
