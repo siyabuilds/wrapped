@@ -47,7 +47,7 @@ app.use("/api/wrapped", wrappedRouter);
 // Serve static files in production - SPA fallback
 if (!isDev) {
   // Catch-all route for SPA - serve index.html for any non-API routes
-  app.get("*", (req, res) => {
+  app.use((req, res) => {
     res.sendFile(path.join(__dirname, "public", "index.html"));
   });
 }
