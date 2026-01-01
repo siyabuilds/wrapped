@@ -1,8 +1,14 @@
 import express from "express";
 import cors from "cors";
-import { config } from "./config/index.js";
+import path from "path";
+import { fileURLToPath } from "url";
+import { config, isDev } from "./config/index.js";
 import { connectDB, disconnectDB, isDBConnected } from "./db/connect.js";
 import wrappedRouter from "./routes/wrpped.js";
+
+// ES Module dirname equivalent
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // Initialize Express app
 const app = express();
@@ -23,10 +29,15 @@ app.get("/health", (req, res) => {
 // Routes
 app.use("/api/wrapped", wrappedRouter);
 
-// Root endpoint
-app.get("/", (req, res) => {
-  res.send("Welcome to the GitHub Wrapped API!");
-});
+// Serve static files in production
+if (!isDev) {
+  app.use(express.static(path.join(__dirname, "public")));
+
+  // Catch-all route for SPA - serve index.html for any non-API routes
+  app.get("*", (req, res) => {
+    res.sendFile(path.join(__dirname, "public", "index.html"));
+  });
+}
 
 // Async startup pattern - connect DB before starting server
 const startServer = async () => {
