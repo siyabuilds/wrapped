@@ -17,8 +17,11 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Health check with database status
-app.get("/health", (req, res) => {
+// Serve static files from public directory (always available)
+app.use(express.static(path.join(__dirname, "public")));
+
+// Health check - JSON endpoint
+app.get("/health/json", (req, res) => {
   res.json({
     status: "ok",
     year: config.year(),
@@ -26,13 +29,23 @@ app.get("/health", (req, res) => {
   });
 });
 
+// Health check - HTML dashboard
+app.get("/health", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "health.html"));
+});
+
+// Dev-only root route
+if (isDev) {
+  app.get("/", (req, res) => {
+    res.sendFile(path.join(__dirname, "public", "index-dev.html"));
+  });
+}
+
 // Routes
 app.use("/api/wrapped", wrappedRouter);
 
-// Serve static files in production
+// Serve static files in production - SPA fallback
 if (!isDev) {
-  app.use(express.static(path.join(__dirname, "public")));
-
   // Catch-all route for SPA - serve index.html for any non-API routes
   app.get("*", (req, res) => {
     res.sendFile(path.join(__dirname, "public", "index.html"));
