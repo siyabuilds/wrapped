@@ -22,9 +22,9 @@ interface Predictions {
 export interface WrappedDocument {
   username: string;
   year: number;
-  name?: string;
+  name?: string | null;
   avatarUrl?: string;
-  bio?: string;
+  bio?: string | null;
   topLanguage?: string;
   languagesBreakdown?: LanguageBreakdown[];
   mostActiveDay?: string;
@@ -32,8 +32,8 @@ export interface WrappedDocument {
   weekendDayActivity?: number;
   totalRepos?: number;
   public_repos?: number;
-  ghostedRepo?: RepoReference;
-  topStarredRepo?: RepoReference;
+  ghostedRepo?: RepoReference | null;
+  topStarredRepo?: RepoReference | null;
   totalCommits?: number;
   activeDays?: number;
   totalContributions?: number;
