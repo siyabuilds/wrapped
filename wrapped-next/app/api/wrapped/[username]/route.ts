@@ -33,22 +33,61 @@ export async function GET(_request: Request, context: RouteContext) {
       return NextResponse.json(cachedWrapped);
     }
 
-    const [user, repos, events, commitSearch, contributions] = await Promise.all([
-      fetchFromGitHub<GitHubUser>(`/users/${username}`),
-      fetchFromGitHub<GitHubRepo[]>(`/users/${username}/repos?per_page=100&sort=pushed&direction=desc`),
-      fetchFromGitHub<GitHubEvent[]>(`/users/${username}/events/public?per_page=100`),
-      searchCommits(username, year),
-      getUserContributions(username, year),
-    ]);
+    let user: GitHubUser;
+    try {
+      user = await fetchFromGitHub<GitHubUser>(`/users/${username}`);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      if (message.includes("404")) {
+        return NextResponse.json({ error: "User not found" }, { status: 404 });
+      }
+      throw error;
+    }
 
-    if (!user) {
-      return NextResponse.json({ error: "User not found" }, { status: 404 });
+    const [reposResult, eventsResult, commitSearchResult, contributionsResult] =
+      await Promise.allSettled([
+        fetchFromGitHub<GitHubRepo[]>(
+          `/users/${username}/repos?per_page=100&sort=pushed&direction=desc`
+        ),
+        fetchFromGitHub<GitHubEvent[]>(`/users/${username}/events/public?per_page=100`),
+        searchCommits(username, year),
+        getUserContributions(username, year),
+      ]);
+
+    const repos = reposResult.status === "fulfilled" ? reposResult.value : [];
+    const events = eventsResult.status === "fulfilled" ? eventsResult.value : [];
+    const commitSearch =
+      commitSearchResult.status === "fulfilled"
+        ? commitSearchResult.value
+        : ({ total_count: 0 } as Awaited<ReturnType<typeof searchCommits>>);
+    const contributions =
+      contributionsResult.status === "fulfilled" ? contributionsResult.value : null;
+
+    if (reposResult.status === "rejected") {
+      console.warn("Repos fetch failed, continuing with empty repos", reposResult.reason);
+    }
+    if (eventsResult.status === "rejected") {
+      console.warn("Events fetch failed, continuing with empty events", eventsResult.reason);
+    }
+    if (commitSearchResult.status === "rejected") {
+      console.warn("Commit search failed, continuing with fallback", commitSearchResult.reason);
+    }
+    if (contributionsResult.status === "rejected") {
+      console.warn(
+        "Contributions fetch failed, continuing with fallback",
+        contributionsResult.reason
+      );
     }
 
     const stats = calculateStats(user, repos, events, commitSearch, contributions);
-    const wrapped = await Wrapped.upsertWrapped(username, year, stats);
 
-    return NextResponse.json(wrapped);
+    try {
+      const wrapped = await Wrapped.upsertWrapped(username, year, stats);
+      return NextResponse.json(wrapped ?? stats);
+    } catch (dbError) {
+      console.warn("Failed to cache wrapped stats, returning computed stats", dbError);
+      return NextResponse.json(stats);
+    }
   } catch (error) {
     const message = error instanceof Error ? error.message : "Internal server error";
     return NextResponse.json({ error: message }, { status: 500 });
