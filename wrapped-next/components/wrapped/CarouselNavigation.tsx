@@ -19,36 +19,39 @@ export function CarouselNavigation({
   canScrollNext,
 }: CarouselNavigationProps) {
   return (
-    <div className="mx-auto flex w-full items-center justify-between gap-2 px-1">
+    <div className="flex items-center justify-between w-full max-w-md mx-auto px-4">
+      {/* Previous Button */}
       <Button
         variant="ghost"
         size="icon"
         onClick={onPrev}
         disabled={!canScrollPrev}
-        className="size-11 rounded-2xl border border-border bg-card/90 text-foreground hover:bg-background hover:text-primary disabled:opacity-30"
+        className="size-12 rounded-full bg-card/50 border border-border/50 text-foreground hover:bg-card hover:text-primary disabled:opacity-30"
       >
         <ChevronLeft className="size-6" />
       </Button>
 
-      <div className="flex flex-1 items-center justify-center gap-1.5 sm:gap-2">
+      {/* Progress Dots */}
+      <div className="flex items-center gap-1.5">
         {Array.from({ length: totalSlides }).map((_, index) => (
           <div
             key={index}
-            className={`h-1.5 rounded-full transition-all duration-300 ${
+            className={`h-2 rounded-full transition-all duration-300 ${
               index === currentIndex
-                ? "w-6 sm:w-8 bg-primary"
-                : "w-1.5 sm:w-2 bg-muted-foreground/35"
+                ? "w-6 bg-primary"
+                : "w-2 bg-muted-foreground/30"
             }`}
           />
         ))}
       </div>
 
+      {/* Next Button */}
       <Button
         variant="ghost"
         size="icon"
         onClick={onNext}
         disabled={!canScrollNext}
-        className="size-11 rounded-2xl border border-border bg-card/90 text-foreground hover:bg-background hover:text-primary disabled:opacity-30"
+        className="size-12 rounded-full bg-card/50 border border-border/50 text-foreground hover:bg-card hover:text-primary disabled:opacity-30"
       >
         <ChevronRight className="size-6" />
       </Button>

@@ -10,25 +10,27 @@ interface RoastSlideProps {
 export function RoastSlide({ roast, isLoading }: RoastSlideProps) {
   return (
     <SlideWrapper>
-      <Card className="h-full border-border/80 bg-card/95 shadow-[0_16px_60px_-35px_rgba(25,40,76,0.45)]">
-        <CardContent className="flex h-full flex-col items-center gap-6 pt-10 pb-8">
+      <Card className="bg-card/90 backdrop-blur-xl border-border/50 shadow-2xl overflow-hidden">
+        <CardContent className="pt-10 pb-8 flex flex-col items-center gap-6">
+          {/* Icon */}
           <div className="relative">
-            <div className="absolute -inset-2 rounded-full bg-gradient-to-r from-chart-1 to-primary blur-md opacity-60" />
-            <div className="relative flex size-20 items-center justify-center rounded-full bg-card ring-4 ring-chart-1/25">
+            <div className="absolute -inset-2 bg-gradient-to-r from-orange-500 to-red-500 rounded-full blur-lg opacity-60" />
+            <div className="relative size-20 bg-card rounded-full flex items-center justify-center ring-4 ring-orange-500/30">
               <Flame className="size-10 text-orange-500" />
             </div>
           </div>
 
           <div className="text-center space-y-2">
-            <p className="text-sm uppercase tracking-[0.17em] text-muted-foreground">
-              AI Roast
+            <p className="text-muted-foreground uppercase tracking-wider text-sm">
+              AI Roast 🔥
             </p>
-            <h2 className="text-2xl font-bold tracking-tight text-foreground">
+            <h2 className="text-2xl font-bold text-foreground">
               Time to get roasted!
             </h2>
           </div>
 
-          <div className="w-full rounded-2xl border border-chart-1/30 bg-chart-1/10 p-5">
+          {/* Roast Content */}
+          <div className="w-full p-5 rounded-xl bg-orange-500/10 border border-orange-500/20">
             {isLoading ? (
               <div className="flex items-center justify-center gap-3 py-4">
                 <Loader2 className="size-5 animate-spin text-orange-500" />
@@ -42,7 +44,7 @@ export function RoastSlide({ roast, isLoading }: RoastSlideProps) {
               </p>
             ) : (
               <p className="text-muted-foreground text-center">
-                Could not generate a roast this time.
+                Couldn&apos;t generate a roast. You must be too perfect! 😎
               </p>
             )}
           </div>

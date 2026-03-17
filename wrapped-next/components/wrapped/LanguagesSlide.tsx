@@ -19,40 +19,42 @@ const LANGUAGE_COLORS = [
 export function LanguagesSlide({ stats }: LanguagesSlideProps) {
   return (
     <SlideWrapper>
-      <Card className="h-full border-border/80 bg-card/95 shadow-[0_16px_60px_-35px_rgba(25,40,76,0.45)]">
-        <CardContent className="flex h-full flex-col items-center gap-6 pt-8 pb-8 sm:pt-10">
+      <Card className="bg-card/90 backdrop-blur-xl border-border/50 shadow-2xl overflow-hidden">
+        <CardContent className="pt-10 pb-8 flex flex-col items-center gap-6">
+          {/* Icon */}
           <div className="relative">
-            <div className="absolute -inset-2 rounded-full bg-gradient-to-r from-chart-2 to-chart-3 blur-md opacity-60" />
-            <div className="relative flex size-20 items-center justify-center rounded-full bg-card ring-4 ring-chart-3/25">
+            <div className="absolute -inset-2 bg-gradient-to-r from-chart-1 to-chart-3 rounded-full blur-lg opacity-60" />
+            <div className="relative size-20 bg-card rounded-full flex items-center justify-center ring-4 ring-chart-3/30">
               <Code2 className="size-10 text-chart-3" />
             </div>
           </div>
 
-          <div className="space-y-2 text-center">
-            <p className="text-sm uppercase tracking-[0.17em] text-muted-foreground">
+          <div className="text-center space-y-2">
+            <p className="text-muted-foreground uppercase tracking-wider text-sm">
               Top Language
             </p>
-            <h2 className="gradient-text text-4xl font-bold sm:text-5xl">
+            <h2 className="text-5xl font-bold text-foreground gradient-text">
               {stats.topLanguage}
             </h2>
           </div>
 
+          {/* Language Breakdown */}
           {stats.languagesBreakdown.length > 0 && (
-            <div className="mt-1 w-full space-y-3">
-              <p className="mb-2 text-center text-sm text-muted-foreground">
+            <div className="w-full space-y-3 mt-4">
+              <p className="text-sm text-muted-foreground text-center mb-4">
                 Languages you used this year
               </p>
               {stats.languagesBreakdown.map((lang, index) => (
-                <div key={lang.name} className="space-y-1.5 rounded-xl border border-border/70 bg-background/70 p-3">
+                <div key={lang.name} className="space-y-1.5">
                   <div className="flex justify-between text-sm">
                     <span className="text-foreground font-medium">
                       {lang.name}
                     </span>
                     <span className="text-muted-foreground">
-                      {lang.count} repos · {lang.percentage}%
+                      {lang.count} repos ({lang.percentage}%)
                     </span>
                   </div>
-                  <div className="h-2.5 overflow-hidden rounded-full bg-muted/70">
+                  <div className="h-3 bg-muted/30 rounded-full overflow-hidden">
                     <div
                       className={`h-full bg-gradient-to-r ${
                         LANGUAGE_COLORS[index % LANGUAGE_COLORS.length]

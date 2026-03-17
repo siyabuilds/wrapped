@@ -19,39 +19,43 @@ export function ActivitySlide({ stats }: ActivitySlideProps) {
 
   return (
     <SlideWrapper>
-      <Card className="h-full border-border/80 bg-card/95 shadow-[0_16px_60px_-35px_rgba(25,40,76,0.45)]">
-        <CardContent className="flex h-full flex-col items-center gap-6 pt-8 pb-8 sm:pt-10">
+      <Card className="bg-card/90 backdrop-blur-xl border-border/50 shadow-2xl overflow-hidden">
+        <CardContent className="pt-10 pb-8 flex flex-col items-center gap-6">
+          {/* Icon */}
           <div className="relative">
-            <div className="absolute -inset-2 rounded-full bg-gradient-to-r from-primary to-chart-2 blur-md opacity-60" />
-            <div className="relative flex size-20 items-center justify-center rounded-full bg-card ring-4 ring-primary/25">
+            <div className="absolute -inset-2 bg-gradient-to-r from-primary to-chart-2 rounded-full blur-lg opacity-60" />
+            <div className="relative size-20 bg-card rounded-full flex items-center justify-center ring-4 ring-primary/30">
               <Calendar className="size-10 text-primary" />
             </div>
           </div>
 
-          <div className="space-y-2 text-center">
-            <p className="text-sm uppercase tracking-[0.17em] text-muted-foreground">
+          <div className="text-center space-y-2">
+            <p className="text-muted-foreground uppercase tracking-wider text-sm">
               Most Active Day
             </p>
-            <h2 className="gradient-text text-4xl font-bold sm:text-5xl">
+            <h2 className="text-5xl font-bold text-foreground gradient-text">
               {stats.mostActiveDay}
             </h2>
           </div>
 
-          <div className="rounded-full border border-border/75 bg-background/85 px-4 py-2">
+          {/* Personality Badge */}
+          <div className="px-4 py-2 rounded-full bg-muted/30 border border-border/30">
             <span className="text-sm text-muted-foreground">
-              Style:
+              You&apos;re a{" "}
               <span className="text-foreground font-semibold">
-                {isWeekendWarrior ? " Weekend-focused builder" : " Weekday grinder"}
+                {isWeekendWarrior ? "Weekend Warrior 🎮" : "Weekday Grinder 💼"}
               </span>
             </span>
           </div>
 
-          <div className="mt-1 w-full space-y-4">
+          {/* Activity Distribution */}
+          <div className="w-full mt-4 space-y-4">
             <p className="text-sm text-muted-foreground text-center">
               Activity Distribution
             </p>
 
-            <div className="flex h-6 overflow-hidden rounded-full bg-muted/70">
+            {/* Visual Bar */}
+            <div className="h-6 bg-muted/30 rounded-full overflow-hidden flex">
               <div
                 className="h-full bg-gradient-to-r from-chart-2 to-chart-3 flex items-center justify-center"
                 style={{ width: `${weekdayPercent}%` }}
@@ -74,15 +78,16 @@ export function ActivitySlide({ stats }: ActivitySlideProps) {
               </div>
             </div>
 
-            <div className="grid grid-cols-1 gap-2 text-sm sm:grid-cols-2">
-              <div className="glass-panel flex items-center gap-2 p-3">
+            {/* Legend */}
+            <div className="flex justify-between text-sm">
+              <div className="flex items-center gap-2">
                 <Briefcase className="size-4 text-chart-2" />
                 <span className="text-muted-foreground">Weekdays</span>
                 <span className="text-foreground font-semibold">
                   {stats.weekDayActivity.toLocaleString()}
                 </span>
               </div>
-              <div className="glass-panel flex items-center gap-2 p-3">
+              <div className="flex items-center gap-2">
                 <Coffee className="size-4 text-chart-4" />
                 <span className="text-muted-foreground">Weekends</span>
                 <span className="text-foreground font-semibold">

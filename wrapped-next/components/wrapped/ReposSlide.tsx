@@ -11,35 +11,37 @@ interface ReposSlideProps {
 export function ReposSlide({ stats }: ReposSlideProps) {
   return (
     <SlideWrapper>
-      <Card className="h-full border-border/80 bg-card/95 shadow-[0_16px_60px_-35px_rgba(25,40,76,0.45)]">
-        <CardContent className="flex h-full flex-col items-center gap-6 pt-8 pb-8 sm:pt-10">
+      <Card className="bg-card/90 backdrop-blur-xl border-border/50 shadow-2xl overflow-hidden">
+        <CardContent className="pt-10 pb-8 flex flex-col items-center gap-6">
+          {/* Icon */}
           <div className="relative">
-            <div className="absolute -inset-2 rounded-full bg-gradient-to-r from-chart-5 to-primary blur-md opacity-60" />
-            <div className="relative flex size-20 items-center justify-center rounded-full bg-card ring-4 ring-chart-5/25">
+            <div className="absolute -inset-2 bg-gradient-to-r from-chart-5 to-primary rounded-full blur-lg opacity-60" />
+            <div className="relative size-20 bg-card rounded-full flex items-center justify-center ring-4 ring-chart-5/30">
               <FolderGit2 className="size-10 text-chart-5" />
             </div>
           </div>
 
-          <div className="space-y-2 text-center">
-            <p className="text-sm uppercase tracking-[0.17em] text-muted-foreground">
+          <div className="text-center space-y-2">
+            <p className="text-muted-foreground uppercase tracking-wider text-sm">
               Total Repositories
             </p>
-            <h2 className="gradient-text text-5xl font-bold sm:text-6xl">
+            <h2 className="text-6xl font-bold text-foreground gradient-text">
               {stats.totalRepos}
             </h2>
           </div>
 
-          <div className="mt-2 grid w-full grid-cols-2 gap-3 sm:gap-4">
-            <div className="glass-panel flex flex-col items-center p-4">
-              <Users className="mb-2 size-5 text-chart-1" />
+          {/* Stats */}
+          <div className="w-full grid grid-cols-2 gap-4 mt-4">
+            <div className="flex flex-col items-center p-4 rounded-xl bg-muted/30 border border-border/30">
+              <Users className="size-5 text-chart-1 mb-2" />
               <span className="text-2xl font-bold text-foreground">
                 {stats.followers.toLocaleString()}
               </span>
               <span className="text-xs text-muted-foreground">Followers</span>
             </div>
 
-            <div className="glass-panel flex flex-col items-center p-4">
-              <Users className="mb-2 size-5 text-chart-2" />
+            <div className="flex flex-col items-center p-4 rounded-xl bg-muted/30 border border-border/30">
+              <Users className="size-5 text-chart-2 mb-2" />
               <span className="text-2xl font-bold text-foreground">
                 {stats.following.toLocaleString()}
               </span>
@@ -47,10 +49,11 @@ export function ReposSlide({ stats }: ReposSlideProps) {
             </div>
           </div>
 
+          {/* Top Starred Repo */}
           {stats.topStarredRepo && stats.topStarredRepo.stars! > 0 && (
-            <div className="mt-1 w-full rounded-2xl border border-chart-2/35 bg-chart-2/10 p-4">
+            <div className="w-full p-4 rounded-xl bg-yellow-500/10 border border-yellow-500/20 mt-2">
               <div className="flex items-center gap-3">
-                <Star className="size-6 shrink-0 fill-chart-2 text-chart-2" />
+                <Star className="size-6 text-yellow-500 fill-yellow-500 shrink-0" />
                 <div className="flex-1 min-w-0">
                   <p className="text-sm text-muted-foreground">
                     Top Starred Repo
@@ -61,7 +64,7 @@ export function ReposSlide({ stats }: ReposSlideProps) {
                 </div>
                 <Badge
                   variant="secondary"
-                  className="border-chart-2/35 bg-chart-2/20 text-chart-2"
+                  className="bg-yellow-500/20 text-yellow-500 border-yellow-500/30"
                 >
                   {stats.topStarredRepo.stars} ★
                 </Badge>

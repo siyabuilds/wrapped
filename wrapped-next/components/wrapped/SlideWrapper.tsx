@@ -8,9 +8,11 @@ interface SlideWrapperProps {
 export function SlideWrapper({ children, className = "" }: SlideWrapperProps) {
   return (
     <div
-      className={`flex-[0_0_100%] min-w-0 px-1 py-2 sm:px-2 sm:py-3 animate-in fade-in slide-in-from-bottom-8 duration-500 [&>*]:min-h-[72dvh] [&>*]:rounded-[1.4rem] sm:[&>*]:min-h-[640px] sm:[&>*]:rounded-[1.8rem] ${className}`}
+      className={`flex-[0_0_100%] min-w-0 flex items-start justify-center px-4 pb-4 pt-2 ${className}`}
     >
-      {children}
+      <div className="w-full max-w-md animate-in fade-in slide-in-from-bottom-4 duration-500">
+        {children}
+      </div>
     </div>
   );
 }

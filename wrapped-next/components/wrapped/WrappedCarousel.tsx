@@ -27,6 +27,7 @@ export function WrappedCarousel({ stats }: WrappedCarouselProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [canScrollPrev, setCanScrollPrev] = useState(false);
   const [canScrollNext, setCanScrollNext] = useState(true);
+  const [viewportHeight, setViewportHeight] = useState<number | null>(null);
 
   // AI Content State
   const [roast, setRoast] = useState<string | null>(stats.roast || null);
@@ -50,12 +51,33 @@ export function WrappedCarousel({ stats }: WrappedCarouselProps) {
     if (emblaApi) emblaApi.scrollNext();
   }, [emblaApi]);
 
+  const syncViewportHeight = useCallback(() => {
+    if (!emblaApi) return;
+    const selectedIndex = emblaApi.selectedScrollSnap();
+    const selectedSlide = emblaApi.slideNodes()[selectedIndex] as
+      | HTMLElement
+      | undefined;
+    if (!selectedSlide) return;
+
+    const contentNode = selectedSlide.firstElementChild as HTMLElement | null;
+    const slideStyles = window.getComputedStyle(selectedSlide);
+    const verticalPadding =
+      parseFloat(slideStyles.paddingTop) + parseFloat(slideStyles.paddingBottom);
+
+    const nextHeight =
+      (contentNode?.offsetHeight ?? selectedSlide.offsetHeight) + verticalPadding;
+    if (nextHeight > 0) {
+      setViewportHeight(nextHeight);
+    }
+  }, [emblaApi]);
+
   const onSelect = useCallback(() => {
     if (!emblaApi) return;
     setCurrentIndex(emblaApi.selectedScrollSnap());
     setCanScrollPrev(emblaApi.canScrollPrev());
     setCanScrollNext(emblaApi.canScrollNext());
-  }, [emblaApi]);
+    syncViewportHeight();
+  }, [emblaApi, syncViewportHeight]);
 
   useEffect(() => {
     if (!emblaApi) return;
@@ -76,6 +98,18 @@ export function WrappedCarousel({ stats }: WrappedCarouselProps) {
       fetchAIContent();
     }
   }, [currentIndex, aiFetched, aiLoading]);
+
+  useEffect(() => {
+    syncViewportHeight();
+  }, [
+    currentIndex,
+    roast,
+    predictions,
+    advice,
+    devStory,
+    aiLoading,
+    syncViewportHeight,
+  ]);
 
   const fetchAIContent = async () => {
     // Skip if already have all AI content from cache
@@ -139,9 +173,14 @@ export function WrappedCarousel({ stats }: WrappedCarouselProps) {
   }, [scrollPrev, scrollNext]);
 
   return (
-    <div className="mx-auto w-full max-w-[640px]">
-      <div className="overflow-hidden" ref={emblaRef}>
-        <div className="flex">
+    <div className="w-full max-w-lg mx-auto">
+      {/* Carousel Container */}
+      <div
+        className="overflow-hidden transition-[height] duration-300 ease-out"
+        ref={emblaRef}
+        style={viewportHeight ? { height: `${viewportHeight}px` } : undefined}
+      >
+        <div className="flex items-start">
           <IntroSlide stats={stats} />
           <CommitsSlide stats={stats} />
           <LanguagesSlide stats={stats} />
@@ -164,7 +203,8 @@ export function WrappedCarousel({ stats }: WrappedCarouselProps) {
         </div>
       </div>
 
-      <div className="mt-5">
+      {/* Navigation */}
+      <div className="mt-6">
         <CarouselNavigation
           currentIndex={currentIndex}
           totalSlides={totalSlides}
@@ -175,7 +215,8 @@ export function WrappedCarousel({ stats }: WrappedCarouselProps) {
         />
       </div>
 
-      <p className="mt-3 text-center text-sm tracking-wide text-muted-foreground">
+      {/* Slide Counter */}
+      <p className="text-center text-muted-foreground text-sm mt-4">
         {currentIndex + 1} / {totalSlides}
       </p>
     </div>

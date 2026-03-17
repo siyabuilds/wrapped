@@ -11,46 +11,51 @@ interface IntroSlideProps {
 export function IntroSlide({ stats }: IntroSlideProps) {
   return (
     <SlideWrapper>
-      <Card className="h-full border-border/80 bg-card/95 shadow-[0_16px_60px_-35px_rgba(25,40,76,0.45)]">
-        <CardContent className="flex h-full flex-col items-center gap-6 pt-8 pb-8 sm:pt-10">
+      <Card className="bg-card/90 backdrop-blur-xl border-border/50 shadow-2xl overflow-hidden">
+        <CardContent className="pt-10 pb-8 flex flex-col items-center gap-6">
+          {/* Animated Avatar */}
           <div className="relative">
-            <div className="absolute -inset-2 rounded-full bg-gradient-to-r from-chart-1 via-accent to-chart-3 blur-md opacity-65" />
+            <div className="absolute -inset-2 bg-gradient-to-r from-primary via-chart-2 to-chart-3 rounded-full blur-lg opacity-75 animate-pulse" />
             <img
               src={stats.avatarUrl}
               alt={`${stats.username}'s avatar`}
-              className="relative size-28 rounded-full ring-4 ring-card shadow-xl sm:size-32"
+              className="relative size-32 rounded-full ring-4 ring-card shadow-xl"
             />
           </div>
 
-          <div className="space-y-2 text-center">
-            <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
+          {/* Name & Username */}
+          <div className="text-center space-y-2">
+            <h2 className="text-3xl font-bold text-foreground">
               {stats.name || stats.username}
             </h2>
-            <p className="flex items-center justify-center gap-2 text-base text-muted-foreground sm:text-lg">
+            <p className="text-muted-foreground text-lg flex items-center justify-center gap-2">
               <User className="size-4" />@{stats.username}
             </p>
           </div>
 
+          {/* Year Badge */}
           <Badge
             variant="outline"
-            className="gap-2 border-primary/30 bg-background/90 px-4 py-2 text-sm text-primary sm:text-base"
+            className="text-base px-4 py-2 gap-2 border-primary/50 text-primary"
           >
             <Calendar className="size-4" />
             {stats.year} Wrapped
           </Badge>
 
-          <div className="mt-2 text-center">
-            <p className="text-xl font-semibold text-foreground sm:text-2xl">
-              A snapshot of your engineering year
+          {/* Welcome Message */}
+          <div className="text-center mt-4 px-4">
+            <p className="text-xl text-foreground font-medium">
+              Let&apos;s see what you built this year! 🚀
             </p>
-            <p className="mt-2 text-sm text-muted-foreground">
+            <p className="text-muted-foreground mt-2 text-sm">
               Swipe to explore your GitHub journey
             </p>
           </div>
 
+          {/* Bio */}
           {stats.bio && (
-            <p className="mt-2 line-clamp-2 border-t border-border/70 pt-4 px-4 text-center text-sm italic text-muted-foreground sm:px-6">
-              "{stats.bio}"
+            <p className="text-sm text-muted-foreground text-center italic px-6 line-clamp-2 border-t border-border/50 pt-4 mt-2">
+              &quot;{stats.bio}&quot;
             </p>
           )}
         </CardContent>

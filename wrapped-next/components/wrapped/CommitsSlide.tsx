@@ -15,35 +15,37 @@ export function CommitsSlide({ stats }: CommitsSlideProps) {
 
   return (
     <SlideWrapper>
-      <Card className="h-full border-border/80 bg-card/95 shadow-[0_16px_60px_-35px_rgba(25,40,76,0.45)]">
-        <CardContent className="flex h-full flex-col items-center gap-6 pt-8 pb-8 sm:pt-10">
+      <Card className="bg-card/90 backdrop-blur-xl border-border/50 shadow-2xl overflow-hidden">
+        <CardContent className="pt-10 pb-8 flex flex-col items-center gap-6">
+          {/* Icon */}
           <div className="relative">
-            <div className="absolute -inset-2 rounded-full bg-gradient-to-r from-chart-4 to-chart-5 blur-md opacity-60" />
-            <div className="relative flex size-20 items-center justify-center rounded-full bg-card ring-4 ring-chart-4/25">
+            <div className="absolute -inset-2 bg-gradient-to-r from-chart-4 to-chart-5 rounded-full blur-lg opacity-60" />
+            <div className="relative size-20 bg-card rounded-full flex items-center justify-center ring-4 ring-chart-4/30">
               <GitCommit className="size-10 text-chart-4" />
             </div>
           </div>
 
-          <div className="space-y-2 text-center">
-            <p className="text-sm uppercase tracking-[0.17em] text-muted-foreground">
+          <div className="text-center space-y-2">
+            <p className="text-muted-foreground uppercase tracking-wider text-sm">
               Total Commits
             </p>
-            <h2 className="gradient-text text-5xl font-bold sm:text-6xl">
+            <h2 className="text-6xl font-bold text-foreground gradient-text">
               {stats.totalCommits.toLocaleString()}
             </h2>
           </div>
 
-          <div className="mt-2 grid w-full grid-cols-2 gap-3 sm:gap-4">
-            <div className="glass-panel flex flex-col items-center p-4">
-              <Flame className="mb-2 size-5 text-chart-1" />
+          {/* Stats Grid */}
+          <div className="w-full grid grid-cols-2 gap-4 mt-4">
+            <div className="flex flex-col items-center p-4 rounded-xl bg-muted/30 border border-border/30">
+              <Flame className="size-5 text-orange-500 mb-2" />
               <span className="text-2xl font-bold text-foreground">
                 {stats.activeDays}
               </span>
               <span className="text-xs text-muted-foreground">Active Days</span>
             </div>
 
-            <div className="glass-panel flex flex-col items-center p-4">
-              <TrendingUp className="mb-2 size-5 text-chart-4" />
+            <div className="flex flex-col items-center p-4 rounded-xl bg-muted/30 border border-border/30">
+              <TrendingUp className="size-5 text-chart-1 mb-2" />
               <span className="text-2xl font-bold text-foreground">
                 {commitsPerDay}
               </span>
@@ -51,7 +53,8 @@ export function CommitsSlide({ stats }: CommitsSlideProps) {
             </div>
           </div>
 
-          <div className="mt-1 w-full rounded-2xl border border-primary/20 bg-primary/8 p-4">
+          {/* Total Contributions */}
+          <div className="w-full p-4 rounded-xl bg-primary/10 border border-primary/20 mt-2">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <Activity className="size-5 text-primary" />

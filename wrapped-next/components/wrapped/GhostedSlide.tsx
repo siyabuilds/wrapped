@@ -12,20 +12,20 @@ export function GhostedSlide({ stats }: GhostedSlideProps) {
   if (!stats.ghostedRepo) {
     return (
       <SlideWrapper>
-        <Card className="h-full border-border/80 bg-card/95 shadow-[0_16px_60px_-35px_rgba(25,40,76,0.45)]">
-          <CardContent className="flex h-full flex-col items-center gap-6 pt-10 pb-8">
+        <Card className="bg-card/90 backdrop-blur-xl border-border/50 shadow-2xl overflow-hidden">
+          <CardContent className="pt-10 pb-8 flex flex-col items-center gap-6">
             <div className="relative">
-              <div className="absolute -inset-2 rounded-full bg-gradient-to-r from-chart-1 to-chart-2 blur-md opacity-60" />
-              <div className="relative flex size-20 items-center justify-center rounded-full bg-card ring-4 ring-chart-1/25">
+              <div className="absolute -inset-2 bg-gradient-to-r from-chart-1 to-chart-2 rounded-full blur-lg opacity-60" />
+              <div className="relative size-20 bg-card rounded-full flex items-center justify-center ring-4 ring-chart-1/30">
                 <Ghost className="size-10 text-chart-1" />
               </div>
             </div>
             <div className="text-center space-y-2">
-              <h2 className="text-3xl font-bold tracking-tight text-foreground">
-                No Ghosted Repos
+              <h2 className="text-3xl font-bold text-foreground">
+                No Ghosted Repos! 👻
               </h2>
               <p className="text-muted-foreground">
-                You're keeping all your projects alive. Impressive dedication!
+                You&apos;re keeping all your projects alive. Impressive dedication!
               </p>
             </div>
           </CardContent>
@@ -36,41 +36,46 @@ export function GhostedSlide({ stats }: GhostedSlideProps) {
 
   return (
     <SlideWrapper>
-      <Card className="h-full border-border/80 bg-card/95 shadow-[0_16px_60px_-35px_rgba(25,40,76,0.45)]">
-        <CardContent className="flex h-full flex-col items-center gap-6 pt-10 pb-8">
+      <Card className="bg-card/90 backdrop-blur-xl border-border/50 shadow-2xl overflow-hidden">
+        <CardContent className="pt-10 pb-8 flex flex-col items-center gap-6">
+          {/* Icon */}
           <div className="relative">
-            <div className="absolute -inset-2 rounded-full bg-gradient-to-r from-muted-foreground/45 to-muted-foreground/25 blur-md opacity-60" />
-            <div className="relative flex size-20 items-center justify-center rounded-full bg-card ring-4 ring-muted-foreground/25">
+            <div className="absolute -inset-2 bg-gradient-to-r from-muted-foreground/50 to-muted-foreground/30 rounded-full blur-lg opacity-60" />
+            <div className="relative size-20 bg-card rounded-full flex items-center justify-center ring-4 ring-muted-foreground/30">
               <Ghost className="size-10 text-muted-foreground" />
             </div>
           </div>
 
           <div className="text-center space-y-2">
-            <p className="text-sm uppercase tracking-[0.17em] text-muted-foreground">
-              Most Ghosted Repo
+            <p className="text-muted-foreground uppercase tracking-wider text-sm">
+              Most Ghosted Repo 👻
             </p>
-            <h2 className="text-3xl font-bold tracking-tight text-foreground break-all">
+            <h2 className="text-3xl font-bold text-foreground break-all">
               {stats.ghostedRepo.name}
             </h2>
           </div>
 
+          {/* Days Count */}
           <div className="text-center">
-            <p className="gradient-text text-6xl font-bold">
+            <p className="text-6xl font-bold gradient-text">
               {stats.ghostedRepo.ghostDays}
             </p>
             <p className="text-muted-foreground mt-1">days without a commit</p>
           </div>
 
-          <div className="glass-panel px-4 py-3 text-center">
+          {/* Message */}
+          <div className="px-4 py-3 rounded-xl bg-muted/30 border border-border/30 text-center">
             <p className="text-sm text-muted-foreground">
-              Every developer has one long-paused project waiting for a second launch.
+              Don&apos;t worry, we all have that one project we promised to finish
+              &quot;someday&quot; 😅
             </p>
           </div>
 
+          {/* View Repo Button */}
           <Button
             variant="outline"
             size="sm"
-            className="gap-2 rounded-xl"
+            className="gap-2"
             onClick={() => window.open(stats.ghostedRepo!.url, "_blank")}
           >
             <ExternalLink className="size-4" />

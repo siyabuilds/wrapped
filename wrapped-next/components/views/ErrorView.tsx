@@ -8,23 +8,21 @@ interface ErrorViewProps {
 
 export function ErrorView({ error, onBack }: ErrorViewProps) {
   return (
-    <div className="animated-bg subtle-grid relative min-h-screen px-4 py-6 sm:px-6 sm:py-8">
-      <div className="relative z-10 flex min-h-screen items-center justify-center">
-        <div className="surface-card flex w-full max-w-lg flex-col items-center gap-6 p-7 text-center sm:p-9">
-          <div className="flex size-16 items-center justify-center rounded-2xl bg-destructive/10">
-            <AlertCircle className="size-8 text-destructive" />
-          </div>
-          <div>
-            <h2 className="mb-2 text-2xl font-bold tracking-tight text-foreground">
-              Oops! Something went wrong
-            </h2>
-            <p className="text-muted-foreground">{error}</p>
-          </div>
-          <Button onClick={onBack} variant="outline" className="gap-2 rounded-2xl">
-            <ArrowLeft className="size-4" />
-            Try Again
-          </Button>
+    <div className="animated-bg min-h-screen flex flex-col items-center justify-center px-4">
+      <div className="flex flex-col items-center gap-6 max-w-md text-center">
+        <div className="size-16 rounded-full bg-destructive/20 flex items-center justify-center">
+          <AlertCircle className="size-8 text-destructive" />
         </div>
+        <div>
+          <h2 className="text-2xl font-bold text-foreground mb-2">
+            Oops! Something went wrong
+          </h2>
+          <p className="text-muted-foreground">{error}</p>
+        </div>
+        <Button onClick={onBack} variant="outline" className="gap-2">
+          <ArrowLeft className="size-4" />
+          Try Again
+        </Button>
       </div>
     </div>
   );
