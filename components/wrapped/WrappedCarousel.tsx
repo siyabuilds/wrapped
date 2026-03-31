@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import useEmblaCarousel from "embla-carousel-react";
 import type { WrappedStats, Predictions } from "@/types/wrapped";
 
@@ -21,6 +21,7 @@ interface WrappedCarouselProps {
 
 // In production (same origin), use empty string; in dev, set NEXT_PUBLIC_API_URL
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? "";
+const TOTAL_SLIDES = 11;
 
 export function WrappedCarousel({ stats }: WrappedCarouselProps) {
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: false });
@@ -40,8 +41,6 @@ export function WrappedCarousel({ stats }: WrappedCarouselProps) {
   );
   const [aiLoading, setAiLoading] = useState(false);
   const [aiFetched, setAiFetched] = useState(false);
-
-  const totalSlides = 11;
 
   const scrollPrev = useCallback(() => {
     if (emblaApi) emblaApi.scrollPrev();
@@ -90,28 +89,7 @@ export function WrappedCarousel({ stats }: WrappedCarouselProps) {
     };
   }, [emblaApi, onSelect]);
 
-  // Fetch AI content when reaching AI slides
-  useEffect(() => {
-    const aiSlideStart = 6; // RoastSlide index
-
-    if (currentIndex >= aiSlideStart && !aiFetched && !aiLoading) {
-      fetchAIContent();
-    }
-  }, [currentIndex, aiFetched, aiLoading]);
-
-  useEffect(() => {
-    syncViewportHeight();
-  }, [
-    currentIndex,
-    roast,
-    predictions,
-    advice,
-    devStory,
-    aiLoading,
-    syncViewportHeight,
-  ]);
-
-  const fetchAIContent = async () => {
+  const fetchAIContent = useCallback(async () => {
     // Skip if already have all AI content from cache
     if (roast && predictions && advice && devStory) {
       setAiFetched(true);
@@ -160,7 +138,28 @@ export function WrappedCarousel({ stats }: WrappedCarouselProps) {
       setAiLoading(false);
       setAiFetched(true);
     }
-  };
+  }, [roast, predictions, advice, devStory, stats]);
+
+  // Fetch AI content when reaching AI slides
+  useEffect(() => {
+    const aiSlideStart = 6; // RoastSlide index
+
+    if (currentIndex >= aiSlideStart && !aiFetched && !aiLoading) {
+      fetchAIContent();
+    }
+  }, [currentIndex, aiFetched, aiLoading, fetchAIContent]);
+
+  useEffect(() => {
+    syncViewportHeight();
+  }, [
+    currentIndex,
+    roast,
+    predictions,
+    advice,
+    devStory,
+    aiLoading,
+    syncViewportHeight,
+  ]);
 
   // Keyboard navigation
   useEffect(() => {
@@ -172,13 +171,18 @@ export function WrappedCarousel({ stats }: WrappedCarouselProps) {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [scrollPrev, scrollNext]);
 
+  const carouselStyle = useMemo(
+    () => (viewportHeight ? { height: `${viewportHeight}px` } : undefined),
+    [viewportHeight]
+  );
+
   return (
     <div className="w-full max-w-xl mx-auto">
       {/* Carousel Container */}
       <div
         className="overflow-hidden transition-[height] duration-300 ease-out"
         ref={emblaRef}
-        style={viewportHeight ? { height: `${viewportHeight}px` } : undefined}
+        style={carouselStyle}
       >
         <div className="flex items-start">
           <IntroSlide stats={stats} />
@@ -207,7 +211,7 @@ export function WrappedCarousel({ stats }: WrappedCarouselProps) {
       <div className="mt-6">
         <CarouselNavigation
           currentIndex={currentIndex}
-          totalSlides={totalSlides}
+          totalSlides={TOTAL_SLIDES}
           onPrev={scrollPrev}
           onNext={scrollNext}
           canScrollPrev={canScrollPrev}
@@ -217,7 +221,7 @@ export function WrappedCarousel({ stats }: WrappedCarouselProps) {
 
       {/* Slide Counter */}
       <p className="text-center text-muted-foreground text-xs sm:text-sm mt-4 tracking-[0.2em] uppercase">
-        {currentIndex + 1} / {totalSlides}
+        {currentIndex + 1} / {TOTAL_SLIDES}
       </p>
     </div>
   );
