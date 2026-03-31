@@ -10,7 +10,7 @@ interface WrappedViewProps {
 
 export function WrappedView({ stats, onBack }: WrappedViewProps) {
   return (
-    <div className="animated-bg min-h-screen flex flex-col items-center px-4 py-8 sm:py-10">
+    <div className="animated-bg min-h-screen flex flex-col items-center px-4 py-8 sm:py-10 animate-in fade-in zoom-in-95 duration-700 ease-out fill-mode-both">
       {/* Back Button */}
       <Button
         onClick={onBack}
