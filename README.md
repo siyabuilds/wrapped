@@ -1,30 +1,34 @@
-# Wrapped
+# GitHub Wrapped 🎁
 
-Developer year-in-review for GitHub users.
+> A beautiful, AI-powered year-in-review for GitHub developers.
 
-This app fetches GitHub activity, computes yearly stats, caches results in MongoDB, and generates optional AI insights (roast, predictions, advice, and dev story).
+Welcome to my **GitHub Wrapped** project! This app acts as your personal developer retrospective. It fetches your GitHub activity, computes your yearly stats, securely caches them in MongoDB, and generates optional AI insights like a gentle roast, predictions for the coming year, personalized advice, and a one-line dev story.
 
-## Stack
+Built with a focus on clean design, performance, and robustness. I'm actively seeking feedback, so feel free to open an issue or submit a PR!
 
-- Next.js 16 (App Router)
-- React 19 + TypeScript
-- MongoDB + Mongoose
-- Tailwind CSS 4
-- OpenAI API (optional, with local fallbacks)
+## 🚀 Tech Stack
 
-## Features
+- **Framework**: Next.js 16 (App Router)
+- **UI & Styling**: React 19 + TypeScript, Tailwind CSS 4, shadcn/ui
+- **Database**: MongoDB + Mongoose
+- **AI Integration**: OpenAI API (with robust local fallbacks)
+- **Animations**: Embla Carousel, Radix UI, CSS animations
 
-- Username-based wrapped page: `/wrapped/:username`
-- Aggregated yearly GitHub stats (repos, commits, activity, language mix, contributions)
-- Cached wrapped results per `username + year`
-- AI-generated extras:
-	- roast
-	- predictions
-	- personalized advice
-	- one-line dev story
-- Graceful fallback behavior when OpenAI or portions of GitHub data are unavailable
+## ✨ Features
 
-## Getting Started
+- **Personalized URL**: Share your stats via `/wrapped/:username`
+- **Comprehensive Stats**: Aggregates yearly GitHub repos, commits, activity heatmaps, language mix, and contributions.
+- **AI-Generated Goodies**:
+  - 🔥 A gentle developer roast
+  - 🔮 Predictions for your next year of coding
+  - 💡 Personalized advice based on your language stack
+  - 📖 A one-line "dev story" summarizing your year
+- **Performance First**: Cached results per `username + year` configuration to keep the load blazingly fast.
+- **Graceful Fallbacks**: Works perfectly even when OpenAI or portions of GitHub data are unavailable or rate-limited.
+
+---
+
+## 🛠️ Getting Started
 
 ### 1. Install dependencies
 
@@ -32,99 +36,44 @@ This app fetches GitHub activity, computes yearly stats, caches results in Mongo
 npm install
 ```
 
-### 2. Create environment variables
+### 2. Configure Environment
 
-Create `.env.local` in the project root:
+Create a `.env.local` file in the project root:
 
 ```env
-# Required
+# Required for caching stats & ai insights
 MONGO_URI=mongodb+srv://<user>:<pass>@<cluster>/<db>?retryWrites=true&w=majority
 
-# Recommended (prevents GitHub rate limits)
+# Highly Recommended (prevents GitHub API rate limits)
 GITHUB_TOKEN=ghp_xxx
 
-# Optional (enables AI insights)
+# Optional (enables spicy AI insights; uses static fallbacks if omitted)
 OPENAI_TOKEN=sk-xxx
 
 # Optional for split frontend/backend deployments
-# Leave unset for same-origin API calls in local development.
 NEXT_PUBLIC_API_URL=
 ```
 
-### 3. Run the app
+### 3. Run the Development Server
 
 ```bash
 npm run dev
 ```
 
-Open `http://localhost:3000`.
+Visit `http://localhost:3000` to start wrapping!
 
-## Scripts
+## 📊 API Routes
 
-- `npm run dev` - Start development server
-- `npm run build` - Build for production
-- `npm run start` - Run production server
-- `npm run lint` - Run ESLint
+*   **`GET /api/wrapped/:username`**: Computes wrapped stats for the target year. Returns cached results when available or 404 if the user doesn't exist.
+*   **`POST /api/wrapped/:username/ai-insights`**: Generates AI insights (predictions, advice, dev story) from stats.
+*   **`POST /api/wrapped/:username/roast`**: Generates the AI roast.
 
-## API Routes
+## 🤝 Contributing
 
-### `GET /api/wrapped/:username`
+I am looking for feedback from the community! If you're a developer checking this out:
+1. Fork the repo and create your branch (`git checkout -b feature/amazing-feature`)
+2. Commit your changes (`git commit -m 'Add some amazing feature'`)
+3. Push to the branch (`git push origin feature/amazing-feature`)
+4. Open a Pull Request
 
-- Computes wrapped stats for the target year and caches in MongoDB.
-- Returns cached result when available.
-- Returns `404` when the GitHub user does not exist.
-
-### `POST /api/wrapped/:username/ai-insights`
-
-Body:
-
-```json
-{
-	"stats": { "...": "wrapped stats object" }
-}
-```
-
-Response:
-
-```json
-{
-	"predictions": {
-		"languagePrediction": "...",
-		"ossPrediction": "...",
-		"burnoutRisk": "..."
-	},
-	"advice": "...",
-	"devStory": "..."
-}
-```
-
-### `POST /api/wrapped/:username/roast`
-
-Body:
-
-```json
-{
-	"stats": { "...": "wrapped stats object" }
-}
-```
-
-Response:
-
-```json
-{
-	"roast": "..."
-}
-```
-
-## Year Logic
-
-The wrapped year is dynamic:
-
-- before December 1st: previous year
-- on/after December 1st: current year
-
-## Notes
-
-- `OPENAI_TOKEN` is optional. If missing, AI endpoints return deterministic fallback text.
-- `GITHUB_TOKEN` is strongly recommended to reduce rate-limit issues.
-- MongoDB is required because wrapped output and AI fields are cached/stored.
+Let's build something awesome together.
