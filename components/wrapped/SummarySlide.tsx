@@ -20,7 +20,7 @@ interface SummarySlideProps {
   devStory: string | null;
 }
 
-const SUMMARY_CARD_BG = "#3b3028";
+const SUMMARY_CARD_BG = "#1a2433";
 
 export function SummarySlide({ stats, devStory }: SummarySlideProps) {
   const summaryRef = useRef<HTMLDivElement>(null);
@@ -87,7 +87,7 @@ export function SummarySlide({ stats, devStory }: SummarySlideProps) {
         {/* Downloadable Summary Card */}
         <div
           ref={summaryRef}
-          className="group/card rounded-2xl border border-border/60 p-6 text-sm shadow-xl ring-1 ring-foreground/10"
+          className="group/card rounded-[1.75rem] border border-border/80 p-6 text-sm shadow-[0_24px_78px_-46px_rgba(3,10,30,0.95)] ring-1 ring-white/10"
           style={{ backgroundColor: SUMMARY_CARD_BG }}
         >
           {/* Header */}

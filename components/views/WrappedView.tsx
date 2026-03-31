@@ -10,22 +10,25 @@ interface WrappedViewProps {
 
 export function WrappedView({ stats, onBack }: WrappedViewProps) {
   return (
-    <div className="animated-bg min-h-screen flex flex-col items-center px-4 py-8">
+    <div className="animated-bg min-h-screen flex flex-col items-center px-4 py-8 sm:py-10">
       {/* Back Button */}
       <Button
         onClick={onBack}
         variant="ghost"
-        className="absolute top-4 left-4 text-muted-foreground hover:text-foreground hover:bg-card/60 gap-2"
+        className="absolute top-4 left-4 text-muted-foreground hover:text-foreground hover:bg-card/60 gap-2 z-10"
       >
         <ArrowLeft className="size-4" />
         Back
       </Button>
 
       {/* Header */}
-      <h1 className="text-3xl sm:text-4xl font-bold mb-6 text-center mt-12 sm:mt-0">
-        <span className="text-foreground">GitHub </span>
-        <span className="gradient-text">Wrapped</span>
-      </h1>
+      <div className="text-center mt-12 sm:mt-0 mb-6 space-y-3">
+        <p className="soft-tag mx-auto">@{stats.username}</p>
+        <h1 className="text-3xl sm:text-4xl font-bold">
+          <span className="text-foreground">GitHub </span>
+          <span className="gradient-text">Wrapped</span>
+        </h1>
+      </div>
 
       {/* Carousel */}
       <div className="flex-1 flex items-center justify-center w-full">

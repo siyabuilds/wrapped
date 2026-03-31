@@ -19,7 +19,7 @@ export function ActivitySlide({ stats }: ActivitySlideProps) {
 
   return (
     <SlideWrapper>
-      <Card className="bg-card/90 backdrop-blur-xl border-border/50 shadow-2xl overflow-hidden">
+      <Card className="surface-card overflow-hidden">
         <CardContent className="pt-10 pb-8 flex flex-col items-center gap-6">
           {/* Icon */}
           <div className="relative">

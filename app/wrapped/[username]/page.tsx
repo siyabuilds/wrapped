@@ -2,12 +2,27 @@
 
 import { use, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { ErrorView, LoadingView, WrappedView } from "@/components/views";
+import { ErrorView, LoadingView, NoActivityView, WrappedView } from "@/components/views";
 import type { WrappedStats } from "@/types/wrapped";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? "";
 
-type RouteViewState = "loading" | "wrapped" | "error";
+type RouteViewState = "loading" | "wrapped" | "no-activity" | "error";
+
+const isWrappedYearActive = (stats: WrappedStats): boolean => {
+  const hasYearActivityField = (stats as Partial<WrappedStats>).hasYearActivity;
+
+  if (typeof hasYearActivityField === "boolean") {
+    return hasYearActivityField;
+  }
+
+  return (
+    stats.totalContributions > 0 ||
+    stats.totalCommits > 0 ||
+    stats.activeDays > 0 ||
+    stats.totalEvents > 0
+  );
+};
 
 interface WrappedUsernamePageProps {
   params: Promise<{
@@ -47,7 +62,7 @@ export default function WrappedUsernamePage({ params }: WrappedUsernamePageProps
         const data = (await response.json()) as WrappedStats;
         if (!isActive) return;
         setStats(data);
-        setViewState("wrapped");
+        setViewState(isWrappedYearActive(data) ? "wrapped" : "no-activity");
       } catch (err) {
         if (!isActive) return;
         setError(err instanceof Error ? err.message : "An unexpected error occurred");
@@ -68,6 +83,16 @@ export default function WrappedUsernamePage({ params }: WrappedUsernamePageProps
 
   if (viewState === "error") {
     return <ErrorView error={error} onBack={() => router.push("/")} />;
+  }
+
+  if (viewState === "no-activity") {
+    return (
+      <NoActivityView
+        username={username}
+        year={stats?.year ?? new Date().getFullYear() - 1}
+        onBack={() => router.push("/")}
+      />
+    );
   }
 
   if (!stats) {

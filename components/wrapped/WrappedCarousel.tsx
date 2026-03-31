@@ -173,7 +173,7 @@ export function WrappedCarousel({ stats }: WrappedCarouselProps) {
   }, [scrollPrev, scrollNext]);
 
   return (
-    <div className="w-full max-w-lg mx-auto">
+    <div className="w-full max-w-xl mx-auto">
       {/* Carousel Container */}
       <div
         className="overflow-hidden transition-[height] duration-300 ease-out"
@@ -216,7 +216,7 @@ export function WrappedCarousel({ stats }: WrappedCarouselProps) {
       </div>
 
       {/* Slide Counter */}
-      <p className="text-center text-muted-foreground text-sm mt-4">
+      <p className="text-center text-muted-foreground text-xs sm:text-sm mt-4 tracking-[0.2em] uppercase">
         {currentIndex + 1} / {totalSlides}
       </p>
     </div>

@@ -19,14 +19,14 @@ export function CarouselNavigation({
   canScrollNext,
 }: CarouselNavigationProps) {
   return (
-    <div className="flex items-center justify-between w-full max-w-md mx-auto px-4">
+    <div className="glass-panel flex items-center justify-between w-full max-w-md mx-auto px-3 py-2.5">
       {/* Previous Button */}
       <Button
         variant="ghost"
         size="icon"
         onClick={onPrev}
         disabled={!canScrollPrev}
-        className="size-12 rounded-full bg-card/50 border border-border/50 text-foreground hover:bg-card hover:text-primary disabled:opacity-30"
+        className="size-11 rounded-full bg-card/45 border border-border/50 text-foreground hover:bg-card hover:text-primary disabled:opacity-30"
       >
         <ChevronLeft className="size-6" />
       </Button>
@@ -38,8 +38,8 @@ export function CarouselNavigation({
             key={index}
             className={`h-2 rounded-full transition-all duration-300 ${
               index === currentIndex
-                ? "w-6 bg-primary"
-                : "w-2 bg-muted-foreground/30"
+                ? "w-7 bg-primary shadow-[0_0_20px_-3px_oklch(0.74_0.16_36/0.95)]"
+                : "w-2 bg-muted-foreground/40"
             }`}
           />
         ))}
@@ -51,7 +51,7 @@ export function CarouselNavigation({
         size="icon"
         onClick={onNext}
         disabled={!canScrollNext}
-        className="size-12 rounded-full bg-card/50 border border-border/50 text-foreground hover:bg-card hover:text-primary disabled:opacity-30"
+        className="size-11 rounded-full bg-card/45 border border-border/50 text-foreground hover:bg-card hover:text-primary disabled:opacity-30"
       >
         <ChevronRight className="size-6" />
       </Button>

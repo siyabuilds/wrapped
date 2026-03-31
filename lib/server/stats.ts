@@ -44,8 +44,18 @@ export interface WrappedStats {
   followers: number;
   following: number;
   totalEvents: number;
+  hasYearActivity: boolean;
   year: number;
 }
+
+const isWithinYear = (dateInput: string, year: number): boolean => {
+  const date = new Date(dateInput);
+  if (Number.isNaN(date.getTime())) {
+    return false;
+  }
+
+  return date.getUTCFullYear() === year;
+};
 
 /**
  * Calculates various GitHub activity stats for a user based on their profile, repositories, events, commit search results, and contribution calendar. 
@@ -81,7 +91,8 @@ const calculateLanguageStats = (repos: GitHubRepo[]) => {
  */
 const calculateDayOfWeekStats = (
   contributions: ContributionsCollection | null,
-  events: GitHubEvent[]
+  events: GitHubEvent[],
+  year: number
 ) => {
   const dayCounts: Record<string, number> = {
     Sunday: 0,
@@ -103,13 +114,17 @@ const calculateDayOfWeekStats = (
     });
   } else {
     events.forEach((event) => {
+      if (!isWithinYear(event.created_at, year)) {
+        return;
+      }
       const date = new Date(event.created_at);
       const dayName = DAYS[date.getDay()];
       dayCounts[dayName] += 1;
     });
   }
 
-  const mostActiveDay = Object.entries(dayCounts).sort((a, b) => b[1] - a[1])[0][0];
+  const highestDay = Object.entries(dayCounts).sort((a, b) => b[1] - a[1])[0];
+  const mostActiveDay = highestDay && highestDay[1] > 0 ? highestDay[0] : "No activity yet";
   const weekDayActivity = weekDays.reduce((sum, day) => sum + dayCounts[day], 0);
   const weekendDayActivity = weekendDays.reduce((sum, day) => sum + dayCounts[day], 0);
 
@@ -176,7 +191,8 @@ const getTopStarredRepo = (repos: GitHubRepo[]): RepoReference | null => {
 const calculateTotalCommits = (
   contributions: ContributionsCollection | null,
   commitSearch: CommitSearchResponse,
-  events: GitHubEvent[]
+  events: GitHubEvent[],
+  year: number
 ) => {
   if (contributions?.totalCommitContributions) {
     return contributions.totalCommitContributions;
@@ -187,7 +203,7 @@ const calculateTotalCommits = (
   }
 
   return events
-    .filter((event) => event.type === "PushEvent")
+    .filter((event) => event.type === "PushEvent" && isWithinYear(event.created_at, year))
     .reduce((sum, event) => sum + (event.payload?.commits?.length || 0), 0);
 };
 
@@ -196,7 +212,11 @@ const calculateTotalCommits = (
  * @param contributions - User's contributions collection data from GitHub API
  * @param events - List of user's public events from GitHub API
  */
-const calculateActiveDays = (contributions: ContributionsCollection | null, events: GitHubEvent[]) => {
+const calculateActiveDays = (
+  contributions: ContributionsCollection | null,
+  events: GitHubEvent[],
+  year: number
+) => {
   if (contributions?.contributionCalendar?.weeks) {
     let activeDays = 0;
 
@@ -213,7 +233,7 @@ const calculateActiveDays = (contributions: ContributionsCollection | null, even
 
   const commitDates = new Set(
     events
-      .filter((event) => event.type === "PushEvent")
+      .filter((event) => event.type === "PushEvent" && isWithinYear(event.created_at, year))
       .map((event) => new Date(event.created_at).toDateString())
   );
 
@@ -236,16 +256,22 @@ export const calculateStats = (
   commitSearch: CommitSearchResponse,
   contributions: ContributionsCollection | null
 ): WrappedStats => {
+  const year = config.year();
   const { topLanguage, languagesBreakdown } = calculateLanguageStats(repos);
   const { mostActiveDay, weekDayActivity, weekendDayActivity } = calculateDayOfWeekStats(
     contributions,
-    events
+    events,
+    year
   );
   const ghostedRepo = findGhostedRepo(repos);
   const topStarredRepo = getTopStarredRepo(repos);
-  const totalCommits = calculateTotalCommits(contributions, commitSearch, events);
-  const activeDays = calculateActiveDays(contributions, events);
-  const totalContributions = contributions?.contributionCalendar?.totalContributions || events.length;
+  const totalCommits = calculateTotalCommits(contributions, commitSearch, events, year);
+  const activeDays = calculateActiveDays(contributions, events, year);
+  const yearEvents = events.filter((event) => isWithinYear(event.created_at, year));
+  const totalContributions =
+    contributions?.contributionCalendar?.totalContributions ?? yearEvents.length;
+  const hasYearActivity =
+    totalContributions > 0 || totalCommits > 0 || activeDays > 0 || yearEvents.length > 0;
 
   return {
     username: user.login,
@@ -266,7 +292,8 @@ export const calculateStats = (
     totalContributions,
     followers: user.followers,
     following: user.following,
-    totalEvents: events.length,
-    year: config.year(),
+    totalEvents: yearEvents.length,
+    hasYearActivity,
+    year,
   };
 };

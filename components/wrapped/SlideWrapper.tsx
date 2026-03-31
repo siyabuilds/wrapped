@@ -8,9 +8,9 @@ interface SlideWrapperProps {
 export function SlideWrapper({ children, className = "" }: SlideWrapperProps) {
   return (
     <div
-      className={`flex-[0_0_100%] min-w-0 flex items-start justify-center px-4 pb-4 pt-2 ${className}`}
+      className={`flex-[0_0_100%] min-w-0 flex items-start justify-center px-3 sm:px-4 pb-4 pt-2 ${className}`}
     >
-      <div className="w-full max-w-md animate-in fade-in slide-in-from-bottom-4 duration-500">
+      <div className="w-full max-w-lg animate-in fade-in slide-in-from-bottom-4 duration-500">
         {children}
       </div>
     </div>

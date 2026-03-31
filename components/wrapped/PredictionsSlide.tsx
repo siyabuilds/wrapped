@@ -16,13 +16,13 @@ export function PredictionsSlide({
 }: PredictionsSlideProps) {
   return (
     <SlideWrapper>
-      <Card className="bg-card/90 backdrop-blur-xl border-border/50 shadow-2xl overflow-hidden">
+      <Card className="surface-card overflow-hidden">
         <CardContent className="pt-10 pb-8 flex flex-col items-center gap-6">
           {/* Icon */}
           <div className="relative">
-            <div className="absolute -inset-2 bg-gradient-to-r from-violet-500 to-purple-500 rounded-full blur-lg opacity-60" />
-            <div className="relative size-20 bg-card rounded-full flex items-center justify-center ring-4 ring-violet-500/30">
-              <Sparkles className="size-10 text-violet-500" />
+            <div className="absolute -inset-2 bg-gradient-to-r from-sky-500 to-cyan-500 rounded-full blur-lg opacity-60" />
+            <div className="relative size-20 bg-card rounded-full flex items-center justify-center ring-4 ring-sky-500/30">
+              <Sparkles className="size-10 text-sky-500" />
             </div>
           </div>
 
@@ -38,7 +38,7 @@ export function PredictionsSlide({
           {/* Predictions Content */}
           {isLoading ? (
             <div className="flex items-center justify-center gap-3 py-8">
-              <Loader2 className="size-5 animate-spin text-violet-500" />
+              <Loader2 className="size-5 animate-spin text-sky-500" />
               <span className="text-muted-foreground">
                 Consulting the crystal ball...
               </span>
@@ -46,9 +46,9 @@ export function PredictionsSlide({
           ) : predictions ? (
             <div className="w-full space-y-4">
               {/* Language Prediction */}
-              <div className="p-4 rounded-xl bg-violet-500/10 border border-violet-500/20">
+              <div className="p-4 rounded-xl bg-sky-500/10 border border-sky-500/25">
                 <div className="flex items-start gap-3">
-                  <Rocket className="size-5 text-violet-500 shrink-0 mt-0.5" />
+                  <Rocket className="size-5 text-sky-500 shrink-0 mt-0.5" />
                   <div>
                     <p className="text-sm text-muted-foreground mb-1">
                       Language Journey
@@ -61,9 +61,9 @@ export function PredictionsSlide({
               </div>
 
               {/* OSS Prediction */}
-              <div className="p-4 rounded-xl bg-purple-500/10 border border-purple-500/20">
+              <div className="p-4 rounded-xl bg-teal-500/10 border border-teal-500/25">
                 <div className="flex items-start gap-3">
-                  <GitBranch className="size-5 text-purple-500 shrink-0 mt-0.5" />
+                  <GitBranch className="size-5 text-teal-500 shrink-0 mt-0.5" />
                   <div>
                     <p className="text-sm text-muted-foreground mb-1">
                       Open Source
@@ -76,9 +76,9 @@ export function PredictionsSlide({
               </div>
 
               {/* Burnout Risk */}
-              <div className="p-4 rounded-xl bg-pink-500/10 border border-pink-500/20">
+              <div className="p-4 rounded-xl bg-amber-500/10 border border-amber-500/25">
                 <div className="flex items-start gap-3">
-                  <Battery className="size-5 text-pink-500 shrink-0 mt-0.5" />
+                  <Battery className="size-5 text-amber-500 shrink-0 mt-0.5" />
                   <div>
                     <p className="text-sm text-muted-foreground mb-1">
                       Energy Check

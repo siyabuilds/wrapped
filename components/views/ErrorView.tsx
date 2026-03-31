@@ -8,13 +8,14 @@ interface ErrorViewProps {
 
 export function ErrorView({ error, onBack }: ErrorViewProps) {
   return (
-    <div className="animated-bg min-h-screen flex flex-col items-center justify-center px-4">
-      <div className="flex flex-col items-center gap-6 max-w-md text-center">
-        <div className="size-16 rounded-full bg-destructive/20 flex items-center justify-center">
+    <div className="animated-bg min-h-screen flex items-center justify-center px-4 py-10">
+      <div className="hero-shell w-full max-w-xl p-8 sm:p-10 flex flex-col items-center gap-6 text-center">
+        <div className="size-16 rounded-2xl bg-destructive/18 border border-destructive/35 flex items-center justify-center">
           <AlertCircle className="size-8 text-destructive" />
         </div>
         <div>
-          <h2 className="text-2xl font-bold text-foreground mb-2">
+          <p className="soft-tag mx-auto mb-3">Request Failed</p>
+          <h2 className="text-2xl sm:text-3xl font-bold text-foreground mb-2">
             Oops! Something went wrong
           </h2>
           <p className="text-muted-foreground">{error}</p>

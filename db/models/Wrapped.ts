@@ -40,6 +40,7 @@ export interface WrappedDocument {
   totalEvents?: number;
   followers?: number;
   following?: number;
+  hasYearActivity?: boolean;
   roast?: string;
   devStory?: string;
   advice?: string;
@@ -112,6 +113,7 @@ const WrappedSchema = new Schema<WrappedDocument, WrappedModel>({
 
   followers: { type: Number },
   following: { type: Number },
+  hasYearActivity: { type: Boolean },
 
   roast: { type: String },
   devStory: { type: String },

@@ -43,6 +43,7 @@ export interface WrappedStats {
   followers: number;
   following: number;
   totalEvents: number;
+  hasYearActivity: boolean;
   year: number;
   createdAt?: string;
   roast?: string;

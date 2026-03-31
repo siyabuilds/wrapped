@@ -12,7 +12,7 @@ export function GhostedSlide({ stats }: GhostedSlideProps) {
   if (!stats.ghostedRepo) {
     return (
       <SlideWrapper>
-        <Card className="bg-card/90 backdrop-blur-xl border-border/50 shadow-2xl overflow-hidden">
+        <Card className="surface-card overflow-hidden">
           <CardContent className="pt-10 pb-8 flex flex-col items-center gap-6">
             <div className="relative">
               <div className="absolute -inset-2 bg-gradient-to-r from-chart-1 to-chart-2 rounded-full blur-lg opacity-60" />
@@ -36,7 +36,7 @@ export function GhostedSlide({ stats }: GhostedSlideProps) {
 
   return (
     <SlideWrapper>
-      <Card className="bg-card/90 backdrop-blur-xl border-border/50 shadow-2xl overflow-hidden">
+      <Card className="surface-card overflow-hidden">
         <CardContent className="pt-10 pb-8 flex flex-col items-center gap-6">
           {/* Icon */}
           <div className="relative">
